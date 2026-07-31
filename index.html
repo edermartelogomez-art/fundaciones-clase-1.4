@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#061421">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="assets/icon-192.png">
+  <link rel="stylesheet" href="styles.css">
+  <title>Fundaciones · Clase 1</title>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="logo">F</div>
+      <div><strong>FUNDACIONES</strong><span>INGENIERÍA CIVIL</span></div>
+    </div>
+    <nav id="sideNav"></nav>
+    <div class="tip"><b>TIP</b><span>Usa los controles y observa cómo cambian los esfuerzos.</span></div>
+  </aside>
+
+  <header class="header">
+    <div>
+      <div class="eyebrow">CLASE 1</div>
+      <h1>Esfuerzos verticales en el suelo</h1>
+      <p>Peso propio y cargas aplicadas</p>
+    </div>
+    <div class="header-actions">
+      <button id="objectivesBtn" class="round-btn">Objetivos</button>
+      <button id="fullBtn" class="round-btn">Pantalla completa</button>
+    </div>
+  </header>
+
+  <main class="stage">
+    <section class="screen active" data-screen="0">
+      <div class="intro-grid">
+        <article class="hero">
+          <img src="assets/building-foundation.jpg" alt="Edificio sobre una cimentación con transmisión de esfuerzos">
+          <div class="shade"></div>
+          <div class="hero-copy">
+            <div class="section-number">1. INTRODUCCIÓN</div>
+            <h2>¿Qué ocurre bajo una edificación?</h2>
+            <p>Aunque esté en reposo, su peso se transmite a la cimentación y luego al terreno.</p>
+          </div>
+          <div class="hero-callout"><strong>Equilibrio ≠ ausencia de fuerzas</strong><span>Las fuerzas se compensan, pero siguen actuando.</span></div>
+          <div id="loadPulse" class="load-pulse"></div>
+          <div id="soilArrows" class="soil-arrows" aria-hidden="true"><span style="--i:0"></span><span style="--i:1"></span><span style="--i:2"></span><span style="--i:3"></span><span style="--i:4"></span><span style="--i:5"></span><span style="--i:6"></span></div>
+          <button id="animateBtn" class="play-btn">▶ Animar carga</button>
+        </article>
+
+        <aside class="sim-panel">
+          <div class="panel-card">
+            <div class="panel-title">RELACIÓN BÁSICA</div>
+            <div class="formula-row">
+              <div class="formula">σ = P/A</div>
+              <div class="legend">σ Esfuerzo (kPa)<br>P Carga (kN)<br>A Área (m²)</div>
+            </div>
+          </div>
+          <div class="panel-card controls-grid">
+            <label>Carga P <output id="pOut">600 kN</output><input id="p" type="range" min="100" max="1200" step="50" value="600"></label>
+            <label>Área A <output id="aOut">6.0 m²</output><input id="a" type="range" min="1" max="12" step=".5" value="6"></label>
+          </div>
+          <div class="panel-card result-card">
+            <div><small>ESFUERZO RESULTANTE</small><strong id="stressOut">100.0 kPa</strong></div>
+            <p id="stressMsg">A mayor área, menor esfuerzo.</p>
+          </div>
+          <div class="panel-card mini-visual crisp-map">
+            <svg id="miniStressMap" viewBox="0 0 420 240" aria-label="Distribución esquemática de esfuerzos">
+              <defs>
+                <marker id="miniArrow" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+                  <path d="M0,0 L9,4.5 L0,9 Z" fill="#ff9f2f"/>
+                </marker>
+              </defs>
+              <rect x="120" y="22" width="180" height="38" rx="5" fill="#c8d3da"/>
+              <g id="miniLoadArrows" stroke="#ff9f2f" stroke-width="5" marker-end="url(#miniArrow)">
+                <line x1="145" y1="65" x2="145" y2="94"/>
+                <line x1="178" y1="65" x2="178" y2="99"/>
+                <line x1="210" y1="65" x2="210" y2="103"/>
+                <line x1="242" y1="65" x2="242" y2="99"/>
+                <line x1="275" y1="65" x2="275" y2="94"/>
+              </g>
+              <g id="miniContours" fill="none" stroke-linecap="round">
+                <path d="M115 92 C130 175 165 208 210 222 C255 208 290 175 305 92" stroke="#216cff" stroke-width="10"/>
+                <path d="M135 92 C150 158 175 188 210 200 C245 188 270 158 285 92" stroke="#24c786" stroke-width="11"/>
+                <path d="M155 92 C168 140 188 166 210 176 C232 166 252 140 265 92" stroke="#ffd33d" stroke-width="12"/>
+                <path d="M177 92 C186 123 198 140 210 147 C222 140 234 123 243 92" stroke="#ff7a2f" stroke-width="13"/>
+                <path d="M194 92 C199 111 204 119 210 123 C216 119 221 111 226 92" stroke="#f53a32" stroke-width="14"/>
+              </g>
+            </svg>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="screen" data-screen="1">
+      <div class="two-col">
+        <article class="lesson-card">
+          <div class="section-number">2. CARGA, ÁREA Y ESFUERZO</div>
+          <h2>La misma carga puede generar esfuerzos distintos.</h2>
+          <p>Explora cómo cambia σ cuando modificas P y A.</p>
+          <div class="big-value" id="stressOut2">100.0 kPa</div>
+          <div class="controls-grid">
+            <label>Carga P <output id="pOut2">600 kN</output><input id="p2" type="range" min="100" max="1200" step="50" value="600"></label>
+            <label>Área A <output id="aOut2">6.0 m²</output><input id="a2" type="range" min="1" max="12" step=".5" value="6"></label>
+          </div>
+        </article>
+        <article class="chart-card"><svg id="chartPA" viewBox="0 0 800 500" aria-label="Relación entre área y esfuerzo"></svg></article>
+      </div>
+    </section>
+
+    <section class="screen" data-screen="2">
+      <div class="two-col">
+        <article class="lesson-card">
+          <div class="section-number">3. PESO PROPIO</div>
+          <h2>El esfuerzo aumenta con la profundidad.</h2>
+          <p>En un suelo homogéneo:</p>
+          <div class="formula large">σᵥ = γz</div>
+          <div class="controls-grid">
+            <label>Peso unitario γ <output id="gOut">18 kN/m³</output><input id="g" type="range" min="14" max="22" step=".5" value="18"></label>
+            <label>Profundidad z <output id="zOut">6.0 m</output><input id="z" type="range" min=".5" max="10" step=".5" value="6"></label>
+          </div>
+          <div class="big-value" id="svOut">108.0 kPa</div>
+        </article>
+        <article class="chart-card"><svg id="chartDepth" viewBox="0 0 800 500" aria-label="Esfuerzo vertical frente a profundidad"></svg></article>
+      </div>
+    </section>
+
+    <section class="screen" data-screen="3">
+      <div class="two-col">
+        <article class="lesson-card">
+          <div class="section-number">4. SUELO ESTRATIFICADO</div>
+          <h2>Cada capa aporta su propio peso.</h2>
+          <div class="controls-grid">
+            <label>γ₁ <output id="g1Out">17</output><input id="g1" type="range" min="14" max="21" step=".5" value="17"></label>
+            <label>γ₂ <output id="g2Out">19</output><input id="g2" type="range" min="15" max="22" step=".5" value="19"></label>
+          </div>
+          <div class="layer-list">
+            <div><span>Capa 1 · 2 m</span><strong id="layer1Out">34 kPa</strong></div>
+            <div><span>Capa 2 · 3 m</span><strong id="layer2Out">57 kPa</strong></div>
+            <div class="total"><span>Total a 5 m</span><strong id="layerTotalOut">91 kPa</strong></div>
+          </div>
+        </article>
+        <article class="chart-card"><svg id="chartLayers" viewBox="0 0 800 500" aria-label="Perfil de esfuerzo en suelo estratificado"></svg></article>
+      </div>
+    </section>
+
+    <section class="screen" data-screen="4">
+      <div class="two-col">
+        <article class="lesson-card">
+          <div class="section-number">5. SOBRECARGA SUPERFICIAL</div>
+          <h2>La sobrecarga desplaza el perfil completo.</h2>
+          <div class="formula large">σᵥ = q + γz</div>
+          <label>Sobrecarga q <output id="qOut">60 kPa</output><input id="q" type="range" min="0" max="150" step="5" value="60"></label>
+          <div class="big-value" id="qTotalOut">150 kPa</div>
+          <p>Lectura a 5 m con γ = 18 kN/m³.</p>
+        </article>
+        <article class="chart-card"><svg id="chartQ" viewBox="0 0 800 500" aria-label="Comparación de perfil con y sin sobrecarga"></svg></article>
+      </div>
+    </section>
+
+    <section class="screen" data-screen="5">
+      <div class="two-col">
+        <article class="lesson-card">
+          <div class="section-number">6. ZONA DE MODELACIÓN</div>
+          <h2>Resuelve y verifica un caso de cimentación.</h2>
+          <p>Una columna transmite <strong>900 kN</strong> a una zapata rectangular de <strong>3.0 m × 2.5 m</strong>.</p>
+          <div class="model-steps">
+            <label>Área calculada A (m²)
+              <input id="answerArea" type="number" step="0.1" placeholder="Escribe el área">
+            </label>
+            <label>Esfuerzo promedio σ (kPa)
+              <input id="answerStress" type="number" step="0.1" placeholder="Escribe el esfuerzo">
+            </label>
+            <button id="checkModel" class="model-check">Comprobar</button>
+            <div id="modelFeedback" class="model-feedback"></div>
+          </div>
+          <div class="model-note"><b>Interpreta:</b> explica verbalmente qué significa el resultado sobre cada metro cuadrado del suelo.</div>
+        </article>
+        <article class="chart-card model-visual">
+          <svg viewBox="0 0 800 500" aria-label="Modelo de zapata rectangular">
+            <defs>
+              <marker id="modelArrow" markerWidth="11" markerHeight="11" refX="8" refY="5.5" orient="auto">
+                <path d="M0,0 L11,5.5 L0,11 Z" fill="#ff9f2f"/>
+              </marker>
+            </defs>
+            <rect width="800" height="500" rx="18" fill="#071522"/>
+            <text x="400" y="48" text-anchor="middle" fill="#f5fbff" font-size="25" font-weight="800">Zapata rectangular con carga centrada</text>
+            <rect x="325" y="95" width="150" height="150" rx="5" fill="#b9c7d0"/>
+            <line x1="400" y1="65" x2="400" y2="285" stroke="#ff9f2f" stroke-width="10" marker-end="url(#modelArrow)"/>
+            <rect x="205" y="285" width="390" height="58" rx="7" fill="#d6dfe5"/>
+            <rect x="95" y="343" width="610" height="120" fill="#5c3d2a"/>
+            <g stroke="#5fe09b" stroke-width="6" marker-end="url(#modelArrow)">
+              <line x1="250" y1="355" x2="250" y2="414"/>
+              <line x1="310" y1="355" x2="310" y2="425"/>
+              <line x1="370" y1="355" x2="370" y2="435"/>
+              <line x1="430" y1="355" x2="430" y2="435"/>
+              <line x1="490" y1="355" x2="490" y2="425"/>
+              <line x1="550" y1="355" x2="550" y2="414"/>
+            </g>
+            <text x="400" y="485" text-anchor="middle" fill="#c9dbe6" font-size="20">P = 900 kN · A = 3.0 × 2.5 m²</text>
+          </svg>
+        </article>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <button id="prevBtn">◀ Anterior</button>
+    <div id="dots" class="dots"></div>
+    <button id="nextBtn" class="primary">Siguiente ▶</button>
+  </footer>
+</div>
+
+<dialog id="objectivesDialog">
+  <h3>Objetivos de la clase</h3>
+  <p>Interpretar el significado físico del esfuerzo vertical y calcularlo por carga aplicada, peso propio, estratificación y sobrecarga.</p>
+  <button id="closeDialog">Cerrar</button>
+</dialog>
+<script src="app.js"></script>
+</body>
+</html>
